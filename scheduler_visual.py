@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+# ألوان ثابتة لكل عملية
 PROCESS_COLORS = {
     "P1": "#1f77b4",
     "P2": "#ff7f0e",
@@ -17,15 +18,10 @@ def plot_gantt_charts_colored(schedulers, titles):
     for i, scheduler in enumerate(schedulers):
         ax = axes[i]
 
-        # تحديد مواقع Y لكل PID
-        y_positions = {}
-        current_y = 0
-        for pid, _, _ in scheduler.gantt_chart:
-            if pid not in y_positions:
-                y_positions[pid] = current_y
-                current_y += 1
+        # تحديد Y ثابت لكل PID
+        y_positions = {p.pid: idx for idx, p in enumerate(scheduler.processes)}
 
-        # رسم البارات
+        # رسم البارات لكل فترة تنفيذ
         end_times = set()
         for pid, start, duration in scheduler.gantt_chart:
             color = PROCESS_COLORS.get(pid, "#7f7f7f")
@@ -34,6 +30,7 @@ def plot_gantt_charts_colored(schedulers, titles):
             ax.text(start + duration/2, y, f"{pid}", ha='center', va='center', color='white', fontsize=9)
             end_times.add(start + duration)
 
+        # إعداد المحاور
         ax.set_yticks(list(y_positions.values()))
         ax.set_yticklabels(list(y_positions.keys()))
         ax.set_ylabel(titles[i], rotation=0, labelpad=50, fontsize=10, va='center')
@@ -43,22 +40,29 @@ def plot_gantt_charts_colored(schedulers, titles):
         end_times = sorted(list(end_times))
         ax.set_xticks([0] + end_times)
 
-        # عمل جدول بيانات أسفل الرسم
+        # عمل جدول بيانات أسفل الرسم لكل العمليات
         table_data = []
         for p in scheduler.processes:
-            resp = (p.start_time - scheduler.time_origin) if p.start_time else 0
+            resp = (p.start_time - scheduler.time_origin) if p.start_time is not None else 0
+            wt = p.waiting_time if p.waiting_time is not None else 0
+            tat = p.turnaround_time if p.turnaround_time is not None else 0
             table_data.append([
                 p.pid,
                 p.arrival_time,
                 p.burst_time,
                 f"{resp:.2f}",
-                f"{p.waiting_time:.2f}",
-                f"{p.turnaround_time:.2f}"
+                f"{wt:.2f}",
+                f"{tat:.2f}"
             ])
-        # إضافة الجدول
-        table = ax.table(cellText=table_data,
-                         colLabels=["PID", "Arrival", "Burst", "Response", "Waiting", "Turnaround"],
-                         cellLoc='center', loc='bottom', bbox=[0, -0.4, 1, 0.3])
+
+        # إضافة الجدول أسفل الرسم
+        table = ax.table(
+            cellText=table_data,
+            colLabels=["PID", "Arrival", "Burst", "Response", "Waiting", "Turnaround"],
+            cellLoc='center',
+            loc='bottom',
+            bbox=[0, -0.4, 1, 0.3]
+        )
         table.auto_set_font_size(False)
         table.set_fontsize(9)
 

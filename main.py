@@ -28,18 +28,20 @@ if __name__ == "__main__":
     titles = []
 
     # 1️⃣ FCFS
-    # print("\n========== FCFS ==========")
-    # fcfs_scheduler = Scheduler(reset_processes(processes))
-    # fcfs_scheduler.run_fcfs()
-    # schedulers.append(fcfs_scheduler)
-    # titles.append("FCFS")
+    print("\n========== FCFS ==========")
+    fcfs_scheduler = Scheduler(reset_processes(processes))
+    fcfs_scheduler.run_fcfs()
+    schedulers.append(fcfs_scheduler)
+    titles.append("FCFS")
 
     # # 2️⃣ SJF
-    print("\n========== SJF ==========")
-    sjf_scheduler = Scheduler(reset_processes(processes))
-    sjf_scheduler.run_sjf()
-    schedulers.append(sjf_scheduler)
-    titles.append("SJF")
+    # print("\n========== SJF ==========")
+    # sjf_scheduler = Scheduler(reset_processes(processes))
+    # sjf_scheduler.run_sjf()
+    # schedulers.append(sjf_scheduler)
+    # titles.append("SJF")
+
+    # error here 
 
     # # 3️⃣ SRTF
     # print("\n========== SRTF ==========")
@@ -48,7 +50,7 @@ if __name__ == "__main__":
     # schedulers.append(srtf_scheduler)
     # titles.append("SRTF")
 
-    # # 4️⃣ Round Robin
+    # 4️⃣ Round Robin
     # print("\n========== Round Robin ==========")
     # rr_scheduler = Scheduler(reset_processes(processes))
     # rr_scheduler.run_round_robin(quantum=3)

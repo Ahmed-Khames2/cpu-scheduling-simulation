@@ -30,7 +30,12 @@ class Process:
         self._thread.daemon = True
 
     def start_thread(self):
-        self._thread.start()
+    # لو الثريد انتهى أو مش alive، نعيد إنشاء thread جديد
+        if self._thread is None or not self._thread.is_alive():
+            self._thread = threading.Thread(target=self._run, name=f"Process-{self.pid}")
+            self._thread.daemon = True
+            self._thread.start()
+
 
     def allow_run(self):
         if self.start_time is None:
